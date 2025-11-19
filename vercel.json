@@ -1,4 +1,4 @@
-json
+```json
 {
   "rewrites": [
     {
@@ -7,3 +7,4 @@ json
     }
   ]
 }
+```
