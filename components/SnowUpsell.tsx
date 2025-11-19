@@ -1,0 +1,267 @@
+import { useState, useEffect, useRef } from "react";
+import { Button } from "./ui/button";
+import { Alert, AlertDescription } from "./ui/alert";
+import { CheckCircle, Loader2, Clock } from "lucide-react";
+import { projectId, publicAnonKey } from "../utils/supabase/info";
+import northPoleSnowImage from "figma:asset/17a13766bc697fc8dd73632f6223611df59e7213.png";
+
+interface SnowUpsellProps {
+  orderToken: string;
+  numberOfLetters: number;
+  onAccept: () => void;
+  onDecline: () => void;
+  onTimeout: () => void;
+}
+
+export function SnowUpsell({ orderToken, numberOfLetters, onAccept, onDecline, onTimeout }: SnowUpsellProps) {
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(numberOfLetters);
+  const [timeRemaining, setTimeRemaining] = useState(120); // 2 minutes
+  const timedOutRef = useRef(false);
+  
+  // Countdown timer
+  useEffect(() => {
+    const countdownInterval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdownInterval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(countdownInterval);
+  }, []);
+
+  // Auto-timeout when countdown hits 0
+  useEffect(() => {
+    if (timeRemaining === 0 && !timedOutRef.current) {
+      console.log("⏰ Snow upsell timer expired - auto-declining");
+      timedOutRef.current = true;
+      onTimeout();
+    }
+  }, [timeRemaining, onTimeout]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleAccept = async () => {
+    if (processing || timedOutRef.current) return;
+    
+    setProcessing(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-cf244566/upsell/accept-snow`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${publicAnonKey}`,
+          },
+          body: JSON.stringify({
+            orderToken,
+            quantity,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add snow to order');
+      }
+
+      const data = await response.json();
+      console.log("✅ Snow upsell accepted:", data);
+      onAccept();
+    } catch (err: any) {
+      console.error("❌ Error accepting snow upsell:", err);
+      setError(err.message || 'Failed to add snow to order');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleDecline = () => {
+    if (processing || timedOutRef.current) return;
+    console.log("❌ Snow upsell declined - showing downsell");
+    onDecline();
+  };
+
+  const totalPrice = (9.99 * quantity).toFixed(2);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-700 via-green-700 to-red-800 flex items-center justify-center p-4">
+      <div className="max-w-6xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
+        {/* Timer Banner */}
+        <div className="bg-red-600 text-white py-4 px-6 flex items-center justify-center gap-2">
+          <Clock className="w-5 h-5 animate-pulse" />
+          <span className="text-lg font-bold">Limited Time Offer: {formatTime(timeRemaining)}</span>
+        </div>
+
+        {/* Main Content - Desktop: 2 columns, Mobile: stacked */}
+        <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-8">
+          {/* Left Column - Product Image */}
+          <div className="flex flex-col items-center justify-start bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 lg:p-8 pt-4">
+            <img 
+              src={northPoleSnowImage} 
+              alt="Certified North Pole Snow"
+              className="w-full max-w-sm h-auto object-contain drop-shadow-2xl"
+            />
+            <div className="mt-4 text-center">
+              <h3 className="text-xl font-bold text-blue-900 mb-2">🎄 Authentic North Pole Snow</h3>
+              <p className="text-gray-600">Certified & Collectible</p>
+            </div>
+            
+            {/* Features List - moved here */}
+            <ul className="space-y-2 mt-4 w-full max-w-md">
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">Authentic certified snow from the North Pole</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">Beautiful collectible jar with certificate</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">Perfect keepsake to treasure forever</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">Ships FREE with your Santa letter order</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Right Column - Offer Details */}
+          <div className="flex flex-col justify-start">
+            <div className="mb-4">
+              <h1 className="text-3xl lg:text-4xl font-bold text-red-700 mb-3">
+                🎁 Wait! Add Certified North Pole Snow!
+              </h1>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                Complete your magical experience with authentic snow from the North Pole! 
+                This special jar of certified snow makes the perfect keepsake.
+              </p>
+            </div>
+
+            {/* Price Badge */}
+            <div className="bg-green-50 border-2 border-green-600 rounded-xl p-4 mb-4">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-gray-700 font-medium">Special One-Time Offer</span>
+                <span className="text-3xl font-bold text-green-700">$9.99</span>
+              </div>
+              <p className="text-sm text-gray-600">per jar</p>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold mb-3 text-center">
+                Select Quantity:
+              </label>
+              
+              {/* Quick Select Buttons */}
+              <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setQuantity(num)}
+                    disabled={processing}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                      quantity === num
+                        ? 'bg-green-600 text-white shadow-lg scale-105'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+
+              {/* Plus/Minus Controls */}
+              <div className="flex items-center gap-4 justify-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={processing || quantity <= 1}
+                  className="px-8 text-xl font-bold"
+                >
+                  −
+                </Button>
+                <div className="flex-1 text-center max-w-[100px]">
+                  <div className="text-3xl font-bold text-gray-900">{quantity}</div>
+                  <div className="text-sm text-gray-600">jar{quantity !== 1 ? 's' : ''}</div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={processing}
+                  className="px-8 text-xl font-bold"
+                >
+                  +
+                </Button>
+              </div>
+
+              {/* Total Price */}
+              <div className="mt-4 text-center py-3 bg-gray-50 rounded-lg">
+                <span className="text-gray-700">Total: </span>
+                <span className="text-2xl font-bold text-green-700">${totalPrice}</span>
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <Alert variant="destructive" className="mb-3">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              <Button
+                onClick={handleAccept}
+                disabled={processing}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-xl font-bold shadow-lg"
+              >
+                {processing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Adding to Order...
+                  </>
+                ) : (
+                  <>
+                    ✓ Yes! Add {quantity} {quantity === 1 ? 'Jar' : 'Jars'} for ${totalPrice}
+                  </>
+                )}
+              </Button>
+
+              <Button
+                onClick={handleDecline}
+                disabled={processing}
+                variant="ghost"
+                className="w-full text-gray-600 hover:text-gray-800 py-3"
+              >
+                No thanks, I don't want this special offer
+              </Button>
+            </div>
+
+            <p className="text-center text-sm text-gray-500 mt-3">
+              🔒 Secure checkout • 💳 Same payment method
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

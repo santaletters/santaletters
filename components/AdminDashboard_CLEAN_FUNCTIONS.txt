@@ -1,0 +1,338 @@
+  // Edit next billing date
+  const handleEditBillingDate = async () => {
+    if (!editBillingDateOrder || !newBillingDate) {
+      alert("⚠️ Please select a billing date");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL + "/admin/set-next-billing-date", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + publicAnonKey,
+        },
+        body: JSON.stringify({
+          orderId: editBillingDateOrder.orderId,
+          nextBillingDate: newBillingDate,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update billing date");
+      }
+
+      const result = await response.json();
+      await fetchOrders();
+      setEditBillingDateOrder(null);
+      setNewBillingDate("");
+      alert(`✅ Next Billing Date Updated!\n\nNew billing date: ${new Date(newBillingDate).toLocaleDateString()}\n\nThe subscription will now charge on this date.`);
+    } catch (error: any) {
+      console.error("Error updating billing date:", error);
+      alert("❌ Update Failed\n\n" + (error.message || "Failed to update billing date"));
+    }
+  };
+
+  // Cancel subscription
+  const handleCancelSubscription = async () => {
+    if (!cancelSubscriptionOrder || !cancelSubscriptionOrder.subscriptionId) return;
+
+    try {
+      const response = await fetch(API_URL + "/subscriptions/" + cancelSubscriptionOrder.subscriptionId + "/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + publicAnonKey,
+        },
+        body: JSON.stringify({
+          orderId: cancelSubscriptionOrder.orderId,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to cancel subscription");
+      }
+
+      await fetchOrders();
+      setCancelSubscriptionOrder(null);
+      alert("✅ Subscription Canceled Successfully!\n\nThe subscription has been canceled in Stripe and the customer has been notified via email.");
+    } catch (error: any) {
+      console.error("Error canceling subscription:", error);
+      alert("❌ Cancellation Failed\n\n" + (error.message || "Failed to cancel subscription"));
+    }
+  };
+
+  // Update billing interval
+  const handleUpdateBillingInterval = async () => {
+    if (!editBillingIntervalOrder) {
+      alert("⚠️ No order selected");
+      return;
+    }
+
+    const intervalDays = parseInt(newBillingInterval);
+    if (!intervalDays || intervalDays < 1 || intervalDays > 365) {
+      alert("⚠️ Please enter a valid billing interval (1-365 days)");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL + "/admin/update-billing-interval", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + publicAnonKey,
+        },
+        body: JSON.stringify({
+          orderId: editBillingIntervalOrder.orderId,
+          billingIntervalDays: intervalDays,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update billing interval");
+      }
+
+      await fetchOrders();
+      setEditBillingIntervalOrder(null);
+      setNewBillingInterval("");
+      alert(`✅ Billing Interval Updated!\n\nNew interval: Every ${intervalDays} days\n\nFuture charges will occur every ${intervalDays} days after the last charge.`);
+    } catch (error: any) {
+      console.error("Error updating billing interval:", error);
+      alert("❌ Update Failed\n\n" + (error.message || "Failed to update billing interval"));
+    }
+  };
+
+  // Manual subscription billing
+  const handleManualBilling = async () => {
+    if (!manualBillingOrder || !manualBillingOrder.subscriptionId) return;
+
+    setIsBillingInProgress(true);
+
+    try {
+      const response = await fetch(API_URL + "/admin/charge-subscription", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + publicAnonKey,
+        },
+        body: JSON.stringify({
+          orderId: manualBillingOrder.orderId,
+          customBillingDate: customBillingDate || null,
+          skipRecentChargeCheck: false,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("❌ Charge subscription failed:", error);
+        console.error("📋 Error details:", JSON.stringify(error, null, 2));
+        
+        // Handle recent charge warning
+        if (error.recentCharge) {
+          setIsBillingInProgress(false);
+          const confirmed = window.confirm(
+            `⚠️ Recent Charge Detected\n\n` +
+            `This subscription was charged ${error.daysSinceCharge} days ago.\n` +
+            `Last charge: ${new Date(error.lastChargeDate).toLocaleDateString()}\n\n` +
+            `Are you sure you want to charge again?`
+          );
+          
+          if (confirmed) {
+            // Retry with skipRecentChargeCheck = true
+            setIsBillingInProgress(true);
+            const retryResponse = await fetch(API_URL + "/admin/charge-subscription", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + publicAnonKey,
+              },
+              body: JSON.stringify({
+                orderId: manualBillingOrder.orderId,
+                customBillingDate: customBillingDate || null,
+                skipRecentChargeCheck: true,
+              }),
+            });
+            
+            if (!retryResponse.ok) {
+              const retryError = await retryResponse.json();
+              throw new Error(retryError.error || "Failed to charge subscription");
+            }
+            
+            const result = await retryResponse.json();
+            await fetchOrders();
+            setManualBillingOrder(null);
+            setCustomBillingDate("");
+            
+            const successMsg = "✅ Subscription Charged Successfully!\n\nInvoice: " + result.invoiceId + "\nAmount Charged: $" + result.amountCharged;
+            const nextBillingMsg = result.nextBillingDate ? "\nNext Billing: " + new Date(result.nextBillingDate).toLocaleDateString() : "";
+            alert(successMsg + nextBillingMsg + "\n\nCustomer has been notified via email.");
+            return;
+          } else {
+            setManualBillingOrder(null);
+            setCustomBillingDate("");
+            return;
+          }
+        }
+        
+        throw new Error(error.error || "Failed to charge subscription");
+      }
+
+      const result = await response.json();
+      await fetchOrders();
+      setManualBillingOrder(null);
+      setCustomBillingDate("");
+      
+      const successMsg = "✅ Subscription Charged Successfully!\n\nInvoice: " + result.invoiceId + "\nAmount Charged: $" + result.amountCharged;
+      const nextBillingMsg = result.nextBillingDate ? "\nNext Billing: " + new Date(result.nextBillingDate).toLocaleDateString() : "";
+      alert(successMsg + nextBillingMsg + "\n\nCustomer has been notified via email.");
+    } catch (error: any) {
+      console.error("❌ Error charging subscription:", error);
+      console.error("📋 Full error details:", JSON.stringify(error, null, 2));
+      alert("❌ Billing Failed\n\n" + (error.message || "Failed to charge subscription"));
+    } finally {
+      setIsBillingInProgress(false);
+    }
+  };
+
+  // Archive Order
+  const archiveOrder = async (orderId: string) => {
+    try {
+      const response = await fetch(API_URL + "/orders/" + orderId + "/archive", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + publicAnonKey,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to archive order");
+      }
+
+      await fetchOrders();
+      setArchiveConfirmOrder(null);
+      alert("✅ Order archived successfully! View in 'Archived Orders' tab.");
+    } catch (error) {
+      console.error("Error archiving order:", error);
+      alert("Error archiving order. Check console for details.");
+    }
+  };
+
+  // Unarchive Order
+  const unarchiveOrder = async (orderId: string) => {
+    try {
+      const response = await fetch(API_URL + "/orders/" + orderId + "/unarchive", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + publicAnonKey,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to unarchive order");
+      }
+
+      await fetchOrders();
+      alert("✅ Order restored successfully!");
+    } catch (error) {
+      console.error("Error unarchiving order:", error);
+      alert("Error unarchiving order. Check console for details.");
+    }
+  };
+
+  // Delete Order Permanently
+  const deleteOrderPermanently = async (orderId: string) => {
+    try {
+      const response = await fetch(API_URL + "/orders/" + orderId + "/delete", {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + publicAnonKey,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete order");
+      }
+
+      await fetchOrders();
+      setDeleteConfirmOrder(null);
+      alert("✅ Order deleted permanently from database!");
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      alert("Error deleting order. Check console for details.");
+    }
+  };
+
+  // Update subscription product name
+  const handleUpdateSubscriptionProduct = async () => {
+    if (!editSubscriptionDetailsOrder || !subscriptionProductName.trim()) {
+      alert("⚠️ Please enter a product name");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL + "/admin/update-subscription-product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + publicAnonKey,
+        },
+        body: JSON.stringify({
+          orderId: editSubscriptionDetailsOrder.orderId,
+          subscriptionProductName: subscriptionProductName.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update product name");
+      }
+
+      await fetchOrders();
+      alert(`✅ Product Name Updated!\n\nNew product: ${subscriptionProductName}`);
+    } catch (error: any) {
+      console.error("Error updating product name:", error);
+      alert("❌ Update Failed\n\n" + (error.message || "Failed to update product name"));
+    }
+  };
+
+  // Update subscription price
+  const handleUpdateSubscriptionPrice = async () => {
+    if (!editSubscriptionDetailsOrder) {
+      alert("⚠️ No order selected");
+      return;
+    }
+
+    const price = parseFloat(subscriptionPrice);
+    if (!price || price < 0.50 || price > 999.99) {
+      alert("⚠️ Please enter a valid price ($0.50 - $999.99)");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URL + "/admin/update-subscription-price", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + publicAnonKey,
+        },
+        body: JSON.stringify({
+          orderId: editSubscriptionDetailsOrder.orderId,
+          subscriptionPrice: price,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update price");
+      }
+
+      await fetchOrders();
+      alert(`✅ Subscription Price Updated!\n\nNew monthly price: ${price.toFixed(2)}`);
+    } catch (error: any) {
+      console.error("Error updating price:", error);
+      alert("❌ Update Failed\n\n" + (error.message || "Failed to update price"));
+    }
+  };

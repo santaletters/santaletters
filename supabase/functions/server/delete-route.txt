@@ -1,0 +1,36 @@
+
+// Delete order permanently
+app.delete("/make-server-cf244566/orders/:orderId/delete", async (c) => {
+  try {
+    const orderId = c.req.param("orderId");
+    const order: any = await kv.get(`order:${orderId}`);
+    
+    if (!order) {
+      return c.json({ error: "Order not found" }, 404);
+    }
+
+    // Only allow deletion of archived orders for safety
+    if (!order.archived) {
+      return c.json({ error: "Only archived orders can be permanently deleted. Archive the order first." }, 400);
+    }
+
+    // Delete the order from KV store
+    await kv.del(`order:${orderId}`);
+    
+    // Remove from orders list
+    const allOrderIds: string[] = (await kv.get("orders:all")) || [];
+    const updatedOrderIds = allOrderIds.filter(id => id !== orderId);
+    await kv.set("orders:all", updatedOrderIds);
+    
+    // Delete token mapping if exists
+    if (order.accessToken) {
+      await kv.del(`token:${order.accessToken}`);
+    }
+
+    console.log(`✅ Order ${orderId} permanently deleted from database`);
+    return c.json({ success: true, message: "Order permanently deleted" });
+  } catch (error: any) {
+    console.error("Error deleting order:", error);
+    return c.json({ error: "Failed to delete order" }, 500);
+  }
+});

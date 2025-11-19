@@ -1,0 +1,63 @@
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("❌ Charge subscription failed:", error);
+        console.error("📋 Error details:", JSON.stringify(error, null, 2));
+        
+        // Handle recent charge warning
+        if (error.recentCharge) {
+          console.log("🚨 RECENT CHARGE DETECTED - Showing confirmation popup");
+          console.log("🚨 Days since charge:", error.daysSinceCharge);
+          console.log("🚨 Last charge date:", error.lastChargeDate);
+          setIsBillingInProgress(false);
+          const confirmed = window.confirm(
+            `⚠️ Recent Charge Detected\n\n` +
+            `This subscription was charged ${error.daysSinceCharge} days ago.\n` +
+            `Last charge: ${new Date(error.lastChargeDate).toLocaleDateString()}\n\n` +
+            `Are you sure you want to charge again?`
+          );
+          
+          console.log("🚨 User confirmation result:", confirmed);
+          
+          if (confirmed) {
+            // Retry with skipRecentChargeCheck = true
+            console.log("✅ User confirmed - Retrying with skipRecentChargeCheck = true");
+            setIsBillingInProgress(true);
+            const retryResponse = await fetch(API_URL + "/admin/charge-subscription", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + publicAnonKey,
+              },
+              body: JSON.stringify({
+                orderId: manualBillingOrder.orderId,
+                customBillingDate: customBillingDate || null,
+                skipRecentChargeCheck: true,
+              }),
+            });
+            
+            if (!retryResponse.ok) {
+              const retryError = await retryResponse.json();
+              console.error("❌ Retry also failed:", retryError);
+              throw new Error(retryError.error || "Failed to charge subscription");
+            }
+            
+            const result = await retryResponse.json();
+            console.log("✅ Charge successful:", result);
+            await fetchOrders();
+            setManualBillingOrder(null);
+            setCustomBillingDate("");
+            
+            const successMsg = "✅ Subscription Charged Successfully!\n\nPayment Intent: " + result.paymentIntentId + "\nAmount Charged: $" + result.amountCharged;
+            const nextBillingMsg = result.nextBillingDate ? "\nNext Billing: " + new Date(result.nextBillingDate).toLocaleDateString() : "";
+            alert(successMsg + nextBillingMsg + "\n\nCustomer has been notified via email.");
+            return;
+          } else {
+            console.log("❌ User canceled - Not charging");
+            setManualBillingOrder(null);
+            setCustomBillingDate("");
+            return;
+          }
+        }
+        
+        throw new Error(error.error || "Failed to charge subscription");
+      }
