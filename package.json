@@ -21,7 +21,10 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "motion": "^11.11.17",
-    "popper.js": "^1.16.1"
+    "popper.js": "^1.16.1",
+    "wouter": "^3.3.5",
+    "@stripe/stripe-js": "^4.8.0",
+    "@stripe/react-stripe-js": "^2.8.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
