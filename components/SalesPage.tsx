@@ -6,22 +6,6 @@ import { Star, Shield, Truck, Gift, CheckCircle2, Sparkles } from "lucide-react"
 import Slider from "react-slick";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 import { setAffiliateAttribution } from "../utils/affiliateTracking";
-import santaGiftsImage from "figma:asset/15f4b3cb26c39fe064d874b5ddeae3c4249b7de1.png";
-import christmasTreeBg from "figma:asset/22f01ed5a54fa120bfa25466c69ee82ce71b629d.png";
-import santaLetterImage from "figma:asset/725e6b4fef19b4141bd5ecabf7b8102295d2c305.png";
-import letterIcon from "figma:asset/895057e0c7b59ea06755bc52fc66dcbf69aa3026.png";
-import certificateIcon from "figma:asset/12386d26dbcfc7512cfcf9e075522aeca5a1e7c0.png";
-import niceListIcon from "figma:asset/5f10839082560bfd9d362897e742915b45589285.png";
-import envelopeIcon from "figma:asset/2b44e2aaafb56e83f78bdf91d205eebd7f2d6e35.png";
-import legoSantaImage from "figma:asset/c44efe97ee63f0165a591a89114f0cc2a46973e8.png";
-import freeGiftsBadge from "figma:asset/746bfae136755b73d513ce560b3953332a23d797.png";
-import starsImage from "figma:asset/4391467a6a8721daf254fcd983c2d316154a73dc.png";
-import freeGiftsImage from "figma:asset/74f0addd0ea0b5525297b06c248df384ddc75c91.png";
-import testimonialsImage from "figma:asset/044d30a4ae2b339204d48cc3353cc50a7b863298.png";
-import snowmanFooter from "figma:asset/3f314541bc06ba18331e0a00b99a2b0b8a312a1b.png";
-import boyWithSantaLetter from "figma:asset/bb7721f0837c33589c57c226d4ecd0316cd5d19a.png";
-import childrenWithSantaLetters from "figma:asset/08b1fe987506a79b3d29a7c6b7b75baf187696dc.png";
-import childWithNiceListCertificate from "figma:asset/01b938c2a364e43f9faff2232495b67bcb15c8ad.png";
 
 interface SalesPageProps {
   onOrderNow: () => void;
@@ -100,8 +84,8 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
       <div className="relative bg-gradient-to-b from-blue-900 to-blue-800 text-white overflow-hidden">
         {/* Stars decoration */}
         <div className="absolute top-0 left-0 right-0 h-64 opacity-60 pointer-events-none">
-          <img 
-            src={starsImage}
+          <ImageWithFallback 
+            src="https://images.unsplash.com/photo-1545169128-53e46e195d46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnb2xkJTIwc3RhcnMlMjBjaHJpc3RtYXN8ZW58MXx8fHwxNzYzNTkwMDc1fDA&ixlib=rb-4.1.0&q=80&w=1080"
             alt=""
             className="w-full h-full object-contain object-top"
           />
@@ -169,14 +153,14 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
             </div>
             
             <div className="relative order-1 md:order-2 max-w-md mx-auto w-full">
-              <img 
-                src={santaGiftsImage}
+              <ImageWithFallback 
+                src="https://images.unsplash.com/photo-1670540805686-a73a025c0dd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGdpZnRzJTIwcHJlc2VudHN8ZW58MXx8fHwxNzYzNTkwMDczfDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Santa with gifts and letters"
                 className="w-full h-auto max-w-full"
               />
               <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6">
-                <img 
-                  src={freeGiftsBadge}
+                <ImageWithFallback 
+                  src="https://images.unsplash.com/photo-1710161468204-9a92f533d7d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVlJTIwZ2lmdHMlMjBiYWRnZXxlbnwxfHx8fDE3NjM1OTAwNzV8MA&ixlib=rb-4.1.0&q=80&w=1080"
                   alt="2 Free Gifts"
                   className="w-16 h-16 md:w-24 md:h-24 max-w-full"
                 />
@@ -233,19 +217,19 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
                 name: "Sarah Jenkins",
                 text: "My daughter's face lit up when she got her personalized letter! The attention to detail was amazing.",
                 rating: 5,
-                image: childWithNiceListCertificate
+                image: "https://images.unsplash.com/photo-1730389658635-f203d842d6f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkJTIwY2hyaXN0bWFzJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzYzNzYyMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080"
               },
               {
                 name: "Rachel Bennett",
                 text: "Amazing quality and fast shipping. Will order again next year for sure!",
                 rating: 5,
-                image: boyWithSantaLetter
+                image: "https://images.unsplash.com/photo-1730389658635-f203d842d6f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkJTIwY2hyaXN0bWFzJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzYzNzYyMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080"
               },
               {
                 name: "Michael Brown",
                 text: "Best Christmas gift ever! The letter was so authentic and my son believes in Santa even more now.",
                 rating: 5,
-                image: childrenWithSantaLetters
+                image: "https://images.unsplash.com/photo-1730389658635-f203d842d6f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNoaWxkJTIwY2hyaXN0bWFzJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzYzNzYyMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080"
               }
             ].map((testimonial, idx) => (
               <div key={idx} className="px-2 md:px-3">
@@ -325,7 +309,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
               {/* Image */}
               <div className="flex justify-center">
                 <img 
-                  src={santaGiftsImage}
+                  src="https://images.unsplash.com/photo-1703753936800-593a07d2285b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGNsYXVzJTIwZ2lmdHMlMjBwcmVzZW50c3xlbnwxfHx8fDE3NjM3NjIzNzV8MA&ixlib=rb-4.1.0&q=80&w=1080"
                   alt="Santa with gifts and letters"
                   className="w-full h-auto max-w-sm md:max-w-md shadow-2xl rounded-lg"
                 />
@@ -383,7 +367,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
       <div 
         className="py-8 md:py-16 relative"
         style={{
-          backgroundImage: `url(${christmasTreeBg})`,
+          backgroundImage: `url(https://images.unsplash.com/photo-1671568596752-c7ec7a123d70?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaHJpc3RtYXMlMjBiYWNrZ3JvdW5kJTIwcGF0dGVybnxlbnwxfHx8fDE3NjM3NjIzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
@@ -424,7 +408,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
               {/* Left - Santa Letter Image */}
               <div className="flex justify-center">
                 <img 
-                  src={santaLetterImage}
+                  src="https://images.unsplash.com/photo-1758402750917-52aead675b72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb25hbGl6ZWQlMjBsZXR0ZXIlMjBwYXBlcnxlbnwxfHx8fDE3NjM3NjIzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080"
                   alt="Personalized letter from Santa"
                   className="w-full h-auto max-w-sm md:max-w-lg"
                 />
@@ -436,7 +420,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
                 <div className="flex gap-3 md:gap-4 items-start md:ml-12">
                   <div className="flex-shrink-0">
                     <img 
-                      src={letterIcon}
+                      src="https://images.unsplash.com/photo-1758402750917-52aead675b72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwZXJzb25hbGl6ZWQlMjBsZXR0ZXIlMjBwYXBlcnxlbnwxfHx8fDE3NjM3NjIzNzh8MA&ixlib=rb-4.1.0&q=80&w=1080"
                       alt="Letter"
                       className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
                     />
@@ -461,7 +445,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
                 <div className="flex gap-3 md:gap-4 items-start">
                   <div className="flex-shrink-0">
                     <img 
-                      src={certificateIcon}
+                      src="https://images.unsplash.com/photo-1584445584400-1a7cc5de77ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaHJpc3RtYXMlMjBjZXJ0aWZpY2F0ZSUyMGRvY3VtZW50fGVufDF8fHx8MTc2Mzc2MjM3OXww&ixlib=rb-4.1.0&q=80&w=1080"
                       alt="Good Behavior Certificate"
                       className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
                     />
@@ -486,7 +470,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
                 <div className="flex gap-3 md:gap-4 items-start md:ml-12">
                   <div className="flex-shrink-0">
                     <img 
-                      src={niceListIcon}
+                      src="https://images.unsplash.com/photo-1695041713048-fe46246ab740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuaWNlJTIwbGlzdCUyMHNjcm9sbHxlbnwxfHx8fDE3NjM3NjIzNzl8MA&ixlib=rb-4.1.0&q=80&w=1080"
                       alt="Nice List"
                       className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
                     />
@@ -511,7 +495,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
                 <div className="flex gap-3 md:gap-4 items-start">
                   <div className="flex-shrink-0">
                     <img 
-                      src={envelopeIcon}
+                      src="https://images.unsplash.com/photo-1683576221434-01e07ef00526?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnZlbG9wZSUyMG1haWwlMjBpY29ufGVufDF8fHx8MTc2MzcyODg3N3ww&ixlib=rb-4.1.0&q=80&w=1080"
                       alt="Envelope"
                       className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
                     />
@@ -559,7 +543,7 @@ export function SalesPage({ onOrderNow }: SalesPageProps) {
               {/* Right - Product Image */}
               <div className="flex justify-center">
                 <img 
-                  src={freeGiftsImage}
+                  src="https://images.unsplash.com/photo-1668903678377-c99e5f2f2dc1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaHJpc3RtYXMlMjBnaWZ0JTIwYm94JTIwYmFkZ2V8ZW58MXx8fHwxNzYzNzYyMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080"
                   alt="Free gifts - Santa's Door Tag and North Pole Stickers"
                   className="w-full h-auto max-w-xs md:max-w-md"
                 />
