@@ -6,10 +6,12 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Edit, Save, X, Package, CheckCircle2, Truck, Plus, CreditCard } from "lucide-react";
-import santaGiftsImage from "figma:asset/15f4b3cb26c39fe064d874b5ddeae3c4249b7de1.png";
-import northPoleSnowImage from "figma:asset/17a13766bc697fc8dd73632f6223611df59e7213.png";
-import santaMagicalJourneyProduct from "figma:asset/a4f5edebb5b93dfab3f262ba974814f443219304.png";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
+
+// Unsplash Images
+const santaGiftsImage = "https://images.unsplash.com/photo-1703753936800-593a07d2285b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGNsYXVzJTIwZ2lmdHMlMjBwcmVzZW50c3xlbnwxfHx8fDE3NjM3NjIzNzV8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const northPoleSnowImage = "https://images.unsplash.com/photo-1673298062288-2df0ce037a1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxub3J0aCUyMHBvbGUlMjBzbm93JTIwd2ludGVyfGVufDF8fHx8MTc2Mzc2MjM3Nnww&ixlib=rb-4.1.0&q=80&w=1080";
+const santaMagicalJourneyProduct = "https://images.unsplash.com/photo-1699369398947-f3779c75bbf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMG1hZ2ljYWwlMjBqb3VybmV5JTIwYm9va3xlbnwxfHx8fDE3NjM3NjIzODB8MA&ixlib=rb-4.1.0&q=80&w=1080";
 import { UpsellOffer } from "./UpsellOffer";
 import { AddAnotherChild } from "./AddAnotherChild";
 import { Card } from "./ui/card";
