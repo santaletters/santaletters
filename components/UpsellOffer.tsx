@@ -6,9 +6,6 @@ import { Alert, AlertDescription } from "./ui/alert";
 import { CheckCircle, Loader2, Gift, Sparkles } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
-import santaMagicalJourneyProduct from "figma:asset/a4f5edebb5b93dfab3f262ba974814f443219304.png";
-import freeGiftsBonus from "figma:asset/3462835fdc9074f383d7d2d5d10d91cca627e9df.png";
-import northPoleSnowImage from "figma:asset/17a13766bc697fc8dd73632f6223611df59e7213.png";
 
 interface UpsellProduct {
   id: string;
