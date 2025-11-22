@@ -10,7 +10,8 @@ import { Loader2, AlertCircle, CheckCircle2, Plus } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
-import northPoleSnowImage from "figma:asset/17a13766bc697fc8dd73632f6223611df59e7213.png";
+
+const northPoleSnowImage = "https://images.unsplash.com/photo-1673298062288-2df0ce037a1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxub3J0aCUyMHBvbGUlMjBzbm93JTIwd2ludGVyfGVufDF8fHx8MTc2Mzc2MjM3Nnww&ixlib=rb-4.1.0&q=80&w=1080";
 
 const stripePromise = loadStripe(
   "pk_live_51QRlGLRxn6b9A6BHfQ25aZPtEFNkxlRDQqDdXCpz3nzK5A7B7NfN5wjRSRY8IvyX0PfWkIjfQCT8E7bqm2zAGH7j00T3xFsApz"
