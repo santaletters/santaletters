@@ -3,7 +3,8 @@ import { Button } from "./ui/button";
 import { Alert, AlertDescription } from "./ui/alert";
 import { CheckCircle, Loader2, Clock, AlertTriangle, Sparkles } from "lucide-react";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
-import northPoleSnowImage from "figma:asset/17a13766bc697fc8dd73632f6223611df59e7213.png";
+
+const northPoleSnowImage = "https://images.unsplash.com/photo-1673298062288-2df0ce037a1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxub3J0aCUyMHBvbGUlMjBzbm93JTIwd2ludGVyfGVufDF8fHx8MTc2Mzc2MjM3Nnww&ixlib=rb-4.1.0&q=80&w=1080";
 
 interface SnowDownsellProps {
   orderToken: string;
