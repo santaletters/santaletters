@@ -12,16 +12,18 @@ import { Checkbox } from "./ui/checkbox";
 import { CheckCircle2, Shield, CreditCard, Edit, ArrowRight, Trash2, User } from "lucide-react";
 import type { LetterPackage } from "./LetterForm";
 import { getAffiliateAttribution } from "../utils/affiliateTracking";
-import santaGiftsImage from "figma:asset/15f4b3cb26c39fe064d874b5ddeae3c4249b7de1.png";
-import snowmanFooter from "figma:asset/3f314541bc06ba18331e0a00b99a2b0b8a312a1b.png";
-import santaLogo from "figma:asset/b444d373622fedd368dc701ca8031ce3422ae4be.png";
-import redRibbonBanner from "figma:asset/471ddb56d9e5034f7977013e6d0669b15d2fa215.png";
-import santaWithGifts from "figma:asset/60b2ae5dc77e0e237abbc5859153be375fa7f0b1.png";
-import moneyBackBadge from "figma:asset/04c09fcb5cc765ed7acc2af3b35a32e26ebcdf9f.png";
-import safeCheckoutBanner from "figma:asset/270a4a0ebfad685f13bb95414708fce2370124a5.png";
-import trustBadges from "figma:asset/ce1e59c1c1e6dd0813685929db1f180cd65e79a4.png";
-import cardLogos from "figma:asset/2c701446b95632e44dfa02744e06390f3611d48e.png";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
+
+// Unsplash Images
+const santaGiftsImage = "https://images.unsplash.com/photo-1703753936800-593a07d2285b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGNsYXVzJTIwZ2lmdHMlMjBwcmVzZW50c3xlbnwxfHx8fDE3NjM3NjIzNzV8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const snowmanFooter = "https://images.unsplash.com/photo-1704394603705-0c30d98e67bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaHJpc3RtYXMlMjBzbm93bWFuJTIwZGVjb3JhdGlvbnxlbnwxfHx8fDE3NjM3NjIzNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const santaLogo = "https://images.unsplash.com/photo-1762417582191-e69cd1cb0609?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGNsYXVzJTIwbG9nb3xlbnwxfHx8fDE3NjM3NjIzNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const redRibbonBanner = "https://images.unsplash.com/photo-1544724586-e364c71e2b55?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWQlMjByaWJib24lMjBiYW5uZXJ8ZW58MXx8fHwxNzYzNzYyMzc2fDA&ixlib=rb-4.1.0&q=80&w=1080";
+const santaWithGifts = "https://images.unsplash.com/photo-1703753936800-593a07d2285b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGNsYXVzJTIwZ2lmdHMlMjBwcmVzZW50c3xlbnwxfHx8fDE3NjM3NjIzNzV8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const moneyBackBadge = "https://images.unsplash.com/photo-1728057213505-775a6ebebf29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb25leSUyMGJhY2slMjBndWFyYW50ZWUlMjBiYWRnZXxlbnwxfHx8fDE3NjM3NjIzNzd8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const safeCheckoutBanner = "https://images.unsplash.com/photo-1580062329539-c76d0cce5c4c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzZWN1cmUlMjBwYXltZW50JTIwYmFkZ2VzfGVufDF8fHx8MTc2Mzc2MjM3N3ww&ixlib=rb-4.1.0&q=80&w=1080";
+const trustBadges = "https://images.unsplash.com/photo-1580062329539-c76d0cce5c4c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzZWN1cmUlMjBwYXltZW50JTIwYmFkZ2VzfGVufDF8fHx8MTc2Mzc2MjM3N3ww&ixlib=rb-4.1.0&q=80&w=1080";
+const cardLogos = "https://images.unsplash.com/photo-1658842244540-883aff68fb78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjcmVkaXQlMjBjYXJkJTIwbG9nb3N8ZW58MXx8fHwxNzYzNzYyMzc4fDA&ixlib=rb-4.1.0&q=80&w=1080";
 
 // Stripe Publishable Key (safe to expose in frontend)
 const STRIPE_PUBLISHABLE_KEY = 'pk_live_51SIHQT2NsH2CKfRANHrn5PsrTTnvRY0t5QStLGW8W3ihy4dhFVhDX4ZIP3lrOYhA1HPtnflUgDAhDxEZ0TgNB1V000lsmZhQBB';
