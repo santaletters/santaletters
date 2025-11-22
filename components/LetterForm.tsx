@@ -8,9 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { CheckCircle2, X } from "lucide-react";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 import { getAffiliateAttribution } from "../utils/affiliateTracking";
-import santaWithGifts from "figma:asset/60b2ae5dc77e0e237abbc5859153be375fa7f0b1.png";
-import santaLogo from "figma:asset/b444d373622fedd368dc701ca8031ce3422ae4be.png";
-import redRibbonBanner from "figma:asset/471ddb56d9e5034f7977013e6d0669b15d2fa215.png";
 
 interface LetterFormProps {
   initialPackages?: LetterPackage[];
@@ -199,8 +196,8 @@ export function LetterForm({ initialPackages, scrollToPackage, onContinue, onBac
               >
                 ← Back to Shop
               </button>
-              <img 
-                src={santaLogo}
+              <ImageWithFallback 
+                src="https://images.unsplash.com/photo-1762417582191-e69cd1cb0609?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGxvZ28lMjBjaHJpc3RtYXN8ZW58MXx8fHwxNzYzNTkwMDgwfDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Santa's Official Letter"
                 className="h-16 w-auto"
               />
@@ -219,8 +216,8 @@ export function LetterForm({ initialPackages, scrollToPackage, onContinue, onBac
             
             {/* Centered Red Ribbon Banner */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm px-4">
-              <img 
-                src={redRibbonBanner}
+              <ImageWithFallback 
+                src="https://images.unsplash.com/photo-1544724586-e364c71e2b55?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWQlMjByaWJib24lMjBiYW5uZXJ8ZW58MXx8fHwxNzYzNTkwMDgxfDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Send your child a special Letter From Santa"
                 className="w-full h-auto"
               />
@@ -228,8 +225,8 @@ export function LetterForm({ initialPackages, scrollToPackage, onContinue, onBac
             
             {/* Santa Image - Top Right - Desktop Only */}
             <div className="hidden md:block absolute top-0 right-0 w-72 h-auto pointer-events-none">
-              <img 
-                src={santaWithGifts}
+              <ImageWithFallback 
+                src="https://images.unsplash.com/photo-1670540805686-a73a025c0dd1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYW50YSUyMGdpZnRzJTIwcHJlc2VudHN8ZW58MXx8fHwxNzYzNTkwMDczfDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Santa with gifts"
                 className="w-full h-auto"
                 style={{ 
